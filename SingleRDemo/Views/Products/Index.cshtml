@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<table class="table table-responsive table-striped">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Images</th>
+            <th>Category_ID</th>
+            <th>Brand_ID</th>
+        </tr>
+    </thead>
+    <tbody id="tblInfo">
+    </tbody>
+</table>
+
+@section Scripts{
+   
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs" ></script>
+
+    <script>
+
+        $(function () {
+          
+
+        });
+
+        $(document).ready(function () {
+
+            $.connection.productHub.client.displayProducts = function () {
+                getdata();
+               // alert("working in func");
+            };
+
+            $.connection.productHub.client.announce = function (message) {
+                console.log(message);
+            };
+           // var pHub = $.connection.productHub;
+            //  alert('Worked');
+            $.connection.hub.start().done(function () {
+                console.log("IT worked");
+                $.connection.productHub.server.announce("Connected");
+                alert('Worked');
+
+            }).fail(function () {
+                alert("Failed connecting Hub");
+            });
+
+            $.connection.hub.logging = true;
+
+            getdata();
+          
+                        function getdata() {
+
+                            $tbl = $("#tblInfo");
+                            $.ajax({
+                                type: 'Post',
+                                url: '@Url.Action("Get")',
+                                dataType: 'json',
+                                success: function (data) {
+                                    $tbl.empty();
+                                    $.each(data.listPd, function (i,model) {
+                                        $tbl.append(
+                                            '<tr>' +
+                                            '<td>' + model.Id + '</td>' +
+                                            '<td>' + model.Name+'</td>' +
+                                            '<td>' + model.Price +'</td>' +
+                                            '<td>' + model.ImagePath +'</td>' +
+                                            '<td>' + model.Category_ID +'</td>' +
+                                            '<td>' + model.Brand_Id+'</td>' +
+                                            '</tr>'
+                                        );
+
+                                    });
+                                }
+                            });
+
+                        }
+
+                    });
+
+
+
+    </script>
+}
