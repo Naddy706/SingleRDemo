@@ -32,20 +32,20 @@
 
         $(document).ready(function () {
 
-            $.connection.productHub.client.displayProducts = function () {
+            var pHub = $.connection.productHub;
+            pHub.client.displayProducts = function () {
                 getdata();
-               // alert("working in func");
+              
             };
 
-            $.connection.productHub.client.announce = function (message) {
+            pHub.client.announce = function (message) {
                 console.log(message);
             };
-           // var pHub = $.connection.productHub;
-            //  alert('Worked');
+           
             $.connection.hub.start().done(function () {
                 console.log("IT worked");
                 $.connection.productHub.server.announce("Connected");
-                alert('Worked');
+           
 
             }).fail(function () {
                 alert("Failed connecting Hub");
